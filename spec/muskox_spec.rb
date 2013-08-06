@@ -18,9 +18,14 @@ describe Muskox do
       @parser = Muskox.generate schema
     end
     it "parses successfully when passed a valid string" do
-      result = @parser.parse %!{"number":1}!
+      result = @parser.parse %!{"number": 1}!
       assert_equal({"number" => 1 }, result)
     end
+    it "parses successfully when passed a different valid string" do
+      result = @parser.parse %!{"number": 2}!
+      assert_equal({"number" => 2 }, result)
+    end
+
   end
 end
 

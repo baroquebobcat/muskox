@@ -1,5 +1,7 @@
 require "muskox/version"
 
+require 'json'
+
 module Muskox
   def self.generate schema
     Parser.new
@@ -7,7 +9,7 @@ module Muskox
 
   class Parser
     def parse input
-      {"number" => 1}
+      JSON.parse input
     end
   end
 end
