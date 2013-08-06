@@ -1,6 +1,20 @@
 # Muskox
 
-TODO: Write a gem description
+A JSON Parser-Generator that takes a json-schema and converts it into a parser.
+
+## Why?
+
+Using a parser to handle inputs makes your app safe from attacks that rely on passing disallowed params, because disallowed params will either be ignored or rejected.
+
+> Be definite about what you accept.(*) 
+>
+> Treat inputs as a language, accept it with a matching computational
+> power, generate its recognizer from its grammar.
+>
+> Treat input-handling computational power as privilege, and reduce it
+> whenever possible.
+
+http://www.cs.dartmouth.edu/~sergey/langsec/postel-principle-patch.txt
 
 ## Installation
 
