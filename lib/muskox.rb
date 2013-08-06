@@ -10,7 +10,7 @@ module Muskox
   class Parser
     def parse input
       r = JSON.parse input
-      if r.keys.size > 1
+      if r.keys.size > 1 || r.first.last.kind_of?(String)
         raise ParserError
       end
       r

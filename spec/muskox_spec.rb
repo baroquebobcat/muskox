@@ -3,7 +3,7 @@ require 'muskox'
 
 describe Muskox do  
   describe "simple object[number]=integer schema, error on extra property" do
-  before do
+    before do
       schema = {
         "title" => "Schema",
         "type" => "object",
@@ -32,8 +32,11 @@ describe Muskox do
         result = @parser.parse %!{"number": 2, "grug":[]}!
       end
     end
-
-
+    it "raises an error when there is an invalid type of property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"number": "string-not-number"}!
+      end
+    end
   end
 end
 
