@@ -1,0 +1,26 @@
+require 'minitest/autorun'
+require 'muskox'
+
+describe Muskox do  
+  describe "simple object[numbe]=integer schema" do
+  before do
+      schema = {
+        "title" => "Schema",
+        "type" => "object",
+        "properties" => {
+          "number" => {
+            "type" => "integer"
+          }
+        },
+        "required" => ["number"]
+      }
+      
+      @parser = Muskox.generate schema
+    end
+    it "parses successfully when passed a valid string" do
+      result = @parser.parse %!{"number":1}!
+      assert_equal({"number" => 1 }, result)
+    end
+  end
+end
+
