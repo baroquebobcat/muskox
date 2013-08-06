@@ -9,7 +9,14 @@ module Muskox
 
   class Parser
     def parse input
-      JSON.parse input
+      r = JSON.parse input
+      if r.keys.size > 1
+        raise ParserError
+      end
+      r
     end
+  end
+
+  class ParserError < StandardError
   end
 end
