@@ -33,6 +33,10 @@ module Muskox
               stack.push [:array, []]
               schema_stack.push(schema["properties"][last.last])
             end
+          when ROOT
+            stack.push [:array, []]
+          else
+            raise "unknown stack type #{stack.last}"
           end
         when :array_end
           array_top = stack.pop
@@ -43,8 +47,14 @@ module Muskox
             matching_type expected_type(schema_stack.last, last), "array" do
               stack.last.last[last.last] = array_top.last
             end
+          when :array
+            matching_type expected_type(schema_stack.last, last), "array" do
+              stack.last.last << array_top.last
+            end
+          when ROOT
+            r = stack.last.last
           else
-            raise "unknown stack type #{stack.last.first}"
+            raise "unknown stack type #{stack.last}"
           end
         when :object_begin
           case stack.last.first
@@ -84,11 +94,22 @@ module Muskox
               stack.last.last[last.last] = value
             end
           when :array
-            matching_type schema_stack.last["items"]["type"], type do
-              stack.last.last << value
+            case schema_stack.last["items"]
+            when Hash
+              matching_type schema_stack.last["items"]["type"], type do
+                stack.last.last << value
+              end
+            when Array
+              matching_type schema_stack.last["items"][stack.last.last.size]["type"], type do
+                stack.last.last << value
+              end
+            else
+              raise "Unexpected items type #{schema_stack.last["items"]}"
             end
+          when ROOT
+            r = stack.last.last
           else
-            raise "unknown stack type #{stack.last.first}"
+            raise "unknown stack type #{stack.last.inspect}"
           end
         else
           raise "unhandled token type: #{type}: #{value}"
@@ -105,7 +126,7 @@ module Muskox
       if expected == actual.to_s && opt
         yield
       else
-        raise ParserError
+        raise ParserError, "expected node of type #{expected} but was #{actual}"
       end
     end
   end
