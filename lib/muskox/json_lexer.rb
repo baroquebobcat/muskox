@@ -64,11 +64,6 @@ module Muskox
       # * *symbolize_names*: If set to true, returns symbols for the names
       #   (keys) in a JSON object. Otherwise strings are returned, which is also
       #   the default.
-      # * *create_additions*: If set to true, the Parser creates
-      #   additions when if a matching class and create_id was found. This
-      #   option defaults to false.
-      # * *object_class*: Defaults to Hash
-      # * *array_class*: Defaults to Array
       # * *quirks_mode*: Enables quirks_mode for parser, that is for example
       #   parsing single JSON values instead of documents is possible.
       def initialize(source, opts = {})
@@ -86,14 +81,6 @@ module Muskox
         end
         @allow_nan = !!opts[:allow_nan]
         @symbolize_names = !!opts[:symbolize_names]
-        if opts.key?(:create_additions)
-          @create_additions = !!opts[:create_additions]
-        else
-          @create_additions = false
-        end
-        @create_id = @create_additions ? JSON.create_id : nil
-        @object_class = opts[:object_class] || Hash
-        @array_class  = opts[:array_class] || Array
         @match_string = opts[:match_string]
       end
 
@@ -228,12 +215,6 @@ module Muskox
           end
           if string.respond_to?(:force_encoding)
             string.force_encoding(::Encoding::UTF_8)
-          end
-          if @create_additions and @match_string
-            for (regexp, klass) in @match_string
-              klass.json_creatable? or next
-              string =~ regexp and return klass.json_create(string)
-            end
           end
           string
         else
