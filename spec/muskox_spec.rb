@@ -249,6 +249,27 @@ describe Muskox do
     end
   end
 
+  describe "malformed json handling" do
+    before do
+      schema = {
+        "type" => "object",
+        "properties" => {
+          "number" => {
+            "type" => "boolean"
+          }
+        },
+        "required" => ["number"]
+      }
+      
+      @parser = Muskox.generate schema
+    end
+    it "raises an error when object unended" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"number": true!
+      end
+    end
+  end
+
 #null
   #array size limits
 # bad JSON strings

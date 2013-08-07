@@ -100,15 +100,15 @@ module Muskox
       def lex &block
         @callback = block
         reset
-        if false #@quirks_mode
-#          while !eos? && skip(IGNORE)
-#          end
-#          if eos?
-#            raise ParserError, "source did not contain any JSON!"
-#          else
-#            obj = parse_value
-#            obj == UNPARSED and raise ParserError, "source did not contain any JSON!"
-#          end
+        if @quirks_mode
+          while !eos? && skip(IGNORE)
+          end
+          if eos?
+            raise ParserError, "source did not contain any JSON!"
+          else
+            obj = lex_value
+            obj == UNPARSED and raise ParserError, "source did not contain any JSON!"
+          end
         else
           until eos?
             case
