@@ -76,7 +76,7 @@ module Muskox
           else
             raise "unknown stack type #{stack.last.first}"
           end
-        when :integer, :string, :float
+        when :integer, :string, :float, :boolean
           case stack.last.first
           when :property
             last = stack.pop
@@ -90,6 +90,8 @@ module Muskox
           else
             raise "unknown stack type #{stack.last.first}"
           end
+        else
+          raise "unhandled token type: #{type}: #{value}"
         end
       end
       r

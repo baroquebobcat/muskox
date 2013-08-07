@@ -231,9 +231,9 @@ module Muskox
         when scan(INTEGER)
           @callback.call :integer, Integer(self[1])
         when scan(TRUE)
-          @callback.call :bool, true
+          @callback.call :boolean, true
         when scan(FALSE)
-          @callback.call :bool, false
+          @callback.call :boolean, false
         when scan(NULL)
           @callback.call :null, nil
         when (string = parse_string) != UNPARSED
