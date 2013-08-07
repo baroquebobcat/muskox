@@ -38,5 +38,45 @@ describe Muskox do
       end
     end
   end
+
+
+  describe "simple object[string]=string schema, error on extra property" do
+    before do
+      schema = {
+        "title" => "Schema",
+        "type" => "object",
+        "properties" => {
+          "string" => {
+            "type" => "string"
+          }
+        },
+        "required" => ["string"]
+      }
+      
+      @parser = Muskox.generate schema
+    end
+    it "parses successfully when passed a valid string" do
+      result = @parser.parse %!{"string": "one"}!
+      assert_equal({"string" => "one" }, result)
+    end
+
+    it "parses successfully when passed a different valid string" do
+      result = @parser.parse %!{"string": "two"}!
+      assert_equal({"string" => "two" }, result)
+    end
+
+    it "raises an error when there is an extra property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"string": "two", "grug":[]}!
+      end
+    end
+    it "raises an error when there is an invalid type of property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"string": 1701}!
+      end
+    end
+  end
+
+
 end
 
