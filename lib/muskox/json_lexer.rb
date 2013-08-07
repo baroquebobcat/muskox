@@ -258,11 +258,9 @@ module Muskox
         when (string = parse_string) != UNPARSED
           @callback.call :string, string
         when scan(ARRAY_OPEN)
-#          @current_nesting += 1
-#          @callback.call 
-#          lex_array
-#          @current_nesting -= 1
-#          ary
+          @current_nesting += 1
+          lex_array
+          @current_nesting -= 1
         when scan(OBJECT_OPEN)
           @current_nesting += 1
           lex_object
@@ -279,16 +277,16 @@ module Muskox
         end
       end
 
-      def parse_array
+      def lex_array
         raise NestingError, "nesting of #@current_nesting is too deep" if
           @max_nesting.nonzero? && @current_nesting > @max_nesting
-        result = @array_class.new
+        @callback.call :array_begin, nil
         delim = false
         until eos?
           case
-          when (value = parse_value) != UNPARSED
+          when (value = lex_value) != UNPARSED
             delim = false
-            result << value
+
             skip(IGNORE)
             if scan(COLLECTION_DELIMITER)
               delim = true
@@ -308,7 +306,7 @@ module Muskox
             raise ParserError, "unexpected token in array at '#{peek(20)}'!"
           end
         end
-        result
+        @callback.call :array_end, nil
       end
 
       def lex_object

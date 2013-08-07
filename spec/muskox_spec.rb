@@ -77,6 +77,50 @@ describe Muskox do
     end
   end
 
+  describe " object[array]=array[string] schema, error on extra property" do
+    before do
+      schema = {
+        "title" => "Schema",
+        "type" => "object",
+        "properties" => {
+          "array" => {
+            "type" => "array",
+            "items" => {"type" => "string"}
+          }
+        },
+        "required" => ["array"]
+      }
+      
+      @parser = Muskox.generate schema
+    end
+    it "parses successfully when passed a valid string" do
+      result = @parser.parse %!{"array": ["one"]}!
+      assert_equal({"array" => ["one"] }, result)
+    end
+
+    it "parses successfully when passed a different valid array" do
+      result = @parser.parse %!{"array": ["two"]}!
+      assert_equal({"array" => ["two"] }, result)
+    end
+
+    it "parses successfully when passed a valid array of size 2" do
+      result = @parser.parse %!{"array": ["two", "one"]}!
+      assert_equal({"array" => ["two", "one"] }, result)
+    end
+
+    it "raises an error when there is an extra property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"array": ["two"], "grug":[]}!
+      end
+    end
+
+    it "raises an error when there is an invalid component type of property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"array": [1701]}!
+        p result
+      end
+    end
+  end
 
 end
 
