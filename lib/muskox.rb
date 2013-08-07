@@ -7,10 +7,12 @@ module Muskox
   end
 
   class Parser
+    ROOT = nil
     attr_reader :schema
     def initialize schema
       @schema = schema
     end
+
     def parse input
       schema_stack = [schema]
       stack = []
@@ -46,6 +48,35 @@ module Muskox
             end
           else
             raise "unknown stack type #{stack.last.first}"
+          end
+        when :object_begin
+          case stack.last && stack.last.first
+          when :property
+            last = stack.last
+            if expected_type(schema, last) == "object"
+              stack.push [:object, {}]
+              schema_stack.push(schema["properties"][last.last])
+            else
+              raise ParserError
+            end
+          when ROOT
+            stack.push [:object, {}]
+          end
+        when :object_end
+          object_top = stack.pop
+          schema_stack.pop
+          case stack.last && stack.last.first
+          when :property
+            last = stack.pop
+            if expected_type(schema, last) == "object"
+              r[last.last] = object_top.last
+            else
+              raise ParserError
+            end
+          when ROOT
+            ;
+          else
+            raise "unknown stack type #{stack.last && stack.last.first}"
           end
         when :integer, :string
           case stack.last.first

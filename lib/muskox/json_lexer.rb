@@ -265,7 +265,6 @@ module Muskox
           @current_nesting += 1
           lex_object
           @current_nesting -= 1
-          obj
 #        when @allow_nan && scan(NAN)
 #          NaN
 #        when @allow_nan && scan(INFINITY)
@@ -312,7 +311,9 @@ module Muskox
       def lex_object
         raise NestingError, "nesting of #@current_nesting is too deep" if
           @max_nesting.nonzero? && @current_nesting > @max_nesting
-        result = @object_class.new
+
+
+        @callback.call :object_begin, nil
         delim = false
         until eos?
           case
@@ -324,7 +325,6 @@ module Muskox
             end
             skip(IGNORE)
             unless (value = lex_value).equal? UNPARSED
-              result[@symbolize_names ? string.to_sym : string] = value
               delim = false
               skip(IGNORE)
               if scan(COLLECTION_DELIMITER)
@@ -341,11 +341,6 @@ module Muskox
             if delim
               raise ParserError, "expected next name, value pair in object at '#{peek(20)}'!"
             end
-            if @create_additions and klassname = result[@create_id]
-              klass = JSON.deep_const_get klassname
-              break unless klass and klass.json_creatable?
-              result = klass.json_create(result)
-            end
             break
           when skip(IGNORE)
             ;
@@ -353,7 +348,7 @@ module Muskox
             raise ParserError, "unexpected token in object at '#{peek(20)}'!"
           end
         end
-        result
+        @callback.call :object_end, nil
       end
     end
   end
