@@ -32,7 +32,26 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+    # to generate a parser, call generate w/ a JSON-Schema
+    parser = Muskox.generate({
+        "title" => "Schema",
+        "type" => "object",
+        "properties" => {
+          "number" => {
+            "type" => "integer"
+          }
+        },
+        "required" => ["number"]
+      })
+
+    # then call parse with the string you want to have parsed
+    n = parser.parse "{\"number\": 1}"
+    # => {"number" => 1}
+    
+    # invalid types are disallowed
+    parser.parse "{\"number\": true}" rescue puts $!
+```
 
 ## Contributing
 
