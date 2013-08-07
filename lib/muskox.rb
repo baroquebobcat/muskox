@@ -14,10 +14,9 @@ module Muskox
     end
 
     def parse input
-
       r = nil
       schema_stack = [schema]
-      stack = []
+      stack = [[ROOT, ROOT]]
       lexer = Pure::Lexer.new input
       lexer.lex do |type, value|
 #        puts "token #{type}: #{value}"
@@ -52,7 +51,7 @@ module Muskox
             raise "unknown stack type #{stack.last.first}"
           end
         when :object_begin
-          case stack.last && stack.last.first
+          case stack.last.first
           when :property
             last = stack.last
             if expected_type(schema_stack.last, last) == "object"
@@ -67,7 +66,7 @@ module Muskox
         when :object_end
           object_top = stack.pop
           
-          case stack.last && stack.last.first
+          case stack.last.first
           when :property
             schema_stack.pop
             last = stack.pop
