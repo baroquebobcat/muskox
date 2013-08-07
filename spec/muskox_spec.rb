@@ -37,6 +37,12 @@ describe Muskox do
         result = @parser.parse %!{"number": "string-not-number"}!
       end
     end
+    it "raises an error when there is a missing property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{}!
+      end
+    end
+
   end
 
 

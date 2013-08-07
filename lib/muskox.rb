@@ -59,6 +59,11 @@ module Muskox
           end
         when :object_end
           object_top = stack.pop
+
+          if schema_stack.last["required"] && !(schema_stack.last["required"] - object_top.last.keys).empty?
+            raise ParserError
+          end
+
           case stack.last.first
           when :property
             schema_stack.pop
