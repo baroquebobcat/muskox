@@ -14,13 +14,15 @@ module Muskox
     end
 
     def parse input
+
+      r = nil
       schema_stack = [schema]
       stack = []
-      r = {}
       lexer = Pure::Lexer.new input
       lexer.lex do |type, value|
 #        puts "token #{type}: #{value}"
 #        puts "stack #{stack.inspect}"
+#        puts "schema stack #{schema_stack.last["type"]}"
         case type
         when :property
           stack.push [type, value]
@@ -28,7 +30,7 @@ module Muskox
           case stack.last.first
           when :property
             last = stack.last
-            if expected_type(schema, last) == "array"
+            if expected_type(schema_stack.last, last) == "array"
               stack.push [:array, []]
               schema_stack.push(schema["properties"][last.last])
             else
@@ -41,8 +43,8 @@ module Muskox
           case stack.last.first
           when :property
             last = stack.pop
-            if expected_type(schema, last) == "array"
-              r[last.last] = array_top.last
+            if expected_type(schema_stack.last, last) == "array"
+              stack.last.last[last.last] = array_top.last
             else
               raise ParserError
             end
@@ -53,7 +55,7 @@ module Muskox
           case stack.last && stack.last.first
           when :property
             last = stack.last
-            if expected_type(schema, last) == "object"
+            if expected_type(schema_stack.last, last) == "object"
               stack.push [:object, {}]
               schema_stack.push(schema["properties"][last.last])
             else
@@ -64,26 +66,28 @@ module Muskox
           end
         when :object_end
           object_top = stack.pop
-          schema_stack.pop
+          
           case stack.last && stack.last.first
           when :property
+            schema_stack.pop
             last = stack.pop
-            if expected_type(schema, last) == "object"
-              r[last.last] = object_top.last
+            if expected_type(schema_stack.last, last) == "object" && stack.last.first == :object
+              stack.last.last[last.last] = object_top.last
             else
               raise ParserError
             end
           when ROOT
-            ;
+            r = object_top.last
           else
             raise "unknown stack type #{stack.last && stack.last.first}"
           end
+
         when :integer, :string
           case stack.last.first
           when :property
             last = stack.pop
-            if expected_type(schema, last) == type.to_s
-              r[last.last] = value
+            if expected_type(schema_stack.last, last) == type.to_s && stack.last.first == :object
+              stack.last.last[last.last] = value
             else
               raise ParserError
             end

@@ -160,5 +160,45 @@ describe Muskox do
     end
   end
 
+  describe "object[object]=object[string]=string schema, error on extra property" do
+    before do
+      schema = {
+        "title" => "Schema",
+        "type" => "object",
+        "properties" => {
+          "object" => {
+            "type" => "object",
+            "properties" => {"string" => {"type" => "string"}},
+            "required" => ["string"]
+          }
+        },
+        "required" => ["object"]
+      }
+      
+      @parser = Muskox.generate schema
+    end
+    it "parses successfully when passed a valid string" do
+      result = @parser.parse %!{"object": {"string":"a"}}!
+      assert_equal({"object" => {"string" => "a"} }, result)
+    end
+
+    it "parses successfully when passed a different valid string" do
+      result = @parser.parse %!{"object": {"string":"b"}}!
+      assert_equal({"object" => {"string" => "b"} }, result)
+    end
+
+    it "raises an error when there is an extra nested property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"object": {"string":"a","grug":[]}, }!
+      end
+    end
+
+    it "raises an error when there is an invalid type of nested property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"object": {"string":1}}!
+      end
+    end
+  end
+
 end
 
