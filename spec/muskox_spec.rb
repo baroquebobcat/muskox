@@ -206,5 +206,31 @@ describe Muskox do
     end
   end
 
+  describe "simple object[number]=float happy path" do
+    before do
+      schema = {
+        "title" => "Schema",
+        "type" => "object",
+        "properties" => {
+          "number" => {
+            "type" => "float"
+          }
+        },
+        "required" => ["number"]
+      }
+      
+      @parser = Muskox.generate schema
+    end
+    it "parses successfully when passed a valid string" do
+      result = @parser.parse %!{"number": 1.0}!
+      assert_equal({"number" => 1.0 }, result)
+    end
+  end
+#float
+#null
+#boolean
+  #array size limits
+# bad JSON strings
+
 end
 

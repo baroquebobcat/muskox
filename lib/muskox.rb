@@ -76,7 +76,7 @@ module Muskox
           else
             raise "unknown stack type #{stack.last.first}"
           end
-        when :integer, :string
+        when :integer, :string, :float
           case stack.last.first
           when :property
             last = stack.pop
