@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Muskox::VERSION
   spec.authors       = ["Nick Howard"]
   spec.email         = ["ndh@baroquebobcat.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{A JSON-Schema based Parser-Generator}
+  spec.summary       = %q{A JSON-Schema based Parser-Generator}
+  spec.homepage      = "https://github.com/baroquebobcat/muskox"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
