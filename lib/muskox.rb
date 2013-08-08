@@ -31,48 +31,17 @@ module Muskox
           end
         when :array_begin
           x_begin stack, schema_stack, [:array, []]
-        when :array_end
-          array_top = stack.pop
-
-          case stack.last.first
-          when :property
-            schema_stack.pop
-            handle_property stack, schema_stack, "array", array_top.last
-          when :array
-            # we've already validated the type on object_begin, so...
-            schema_stack.pop
-            stack.last.last << array_top.last
-          when ROOT
-            matching_type schema_stack.last["type"], "array" do
-              r = stack.last.last
-            end
-          else
-            raise "unknown stack type #{stack.last}"
-          end
         when :object_begin
           x_begin stack, schema_stack, [:object, {}]
+        when :array_end
+          tmp = x_end stack, schema_stack
+          r = tmp if stack.last.first == ROOT
         when :object_end
-          object_top = stack.pop
-
-          if schema_stack.last["required"] && !(schema_stack.last["required"] - object_top.last.keys).empty?
-            raise ParserError, "missing required keys #{schema_stack.last["required"] - object_top.last.keys}"
+          if schema_stack.last["required"] && !(schema_stack.last["required"] - stack.last.last.keys).empty?
+            raise ParserError, "missing required keys #{schema_stack.last["required"] - stack.last.last.keys}"
           end
-
-          case stack.last.first
-          when :property
-            schema_stack.pop
-            handle_property stack, schema_stack, "object", object_top.last
-          when :array
-            schema_stack.pop
-            # we've already validated the type on object_begin, so...
-            stack.last.last << object_top.last
-          when ROOT
-            matching_type schema_stack.last["type"], "object" do
-              r = object_top.last
-            end
-          else
-            raise "unknown stack type #{stack.last.first}"
-          end
+          tmp = x_end stack, schema_stack
+          r = tmp if stack.last.first == ROOT
         when :integer, :string, :float, :boolean, :null
           case stack.last.first
           when :property
@@ -113,6 +82,25 @@ module Muskox
         stack.push stack_value
       else
         raise "unknown stack type #{stack.last}"
+      end
+    end
+
+    def x_end stack, schema_stack
+      type, value = stack.pop
+      case stack.last.first
+      when :property
+        schema_stack.pop
+        handle_property stack, schema_stack, type.to_s, value
+      when :array
+        schema_stack.pop
+        # we've already validated the type on object_begin, so...
+        stack.last.last << value
+      when ROOT
+        matching_type schema_stack.last["type"], type.to_s do
+          return value
+        end
+      else
+        raise "unknown stack type #{stack.last.first}"
       end
     end
 
