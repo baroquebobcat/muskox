@@ -37,6 +37,12 @@ module Muskox
               stack.push [:array, []]
               schema_stack.push(schema["properties"][last.last])
             end
+          when :array
+            last = stack.last
+            for_array stack, schema_stack, "array" do |scope|
+              stack.push [:array, []]
+              schema_stack.push scope
+            end
           when ROOT
             stack.push [:array, []]
           else
@@ -50,9 +56,9 @@ module Muskox
             schema_stack.pop
             handle_property stack, schema_stack, "array", array_top.last
           when :array
-            matching_type expected_type(schema_stack.last, last), "array" do
-              stack.last.last << array_top.last
-            end
+            # we've already validated the type on object_begin, so...
+            schema_stack.pop
+            stack.last.last << array_top.last
           when ROOT
             matching_type schema_stack.last["type"], "array" do
               r = stack.last.last

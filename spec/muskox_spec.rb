@@ -309,6 +309,45 @@ describe Muskox do
     end
   end
 
+  describe "object[array]=array[]=array[strings] schema, error on extra property" do
+    before do
+      schema = {
+        "title" => "Schema",
+        "type" => "object",
+        "properties" => {
+          "array" => {
+            "type" => "array",
+            "items" => {"type" => "array", "items"=>{"type" => "string"}}
+          }
+        },
+        "required" => ["array"]
+      }
+      
+      @parser = Muskox.generate schema
+    end
+    it "parses successfully when passed a valid string" do
+      result = @parser.parse %!{"array": [[]]}!
+      assert_equal({"array" => [[]] }, result)
+    end
+
+    it "parses successfully when passed a different valid string" do
+      result = @parser.parse %!{"array": [[],[]]}!
+      assert_equal({"array" => [[],[]] }, result)
+    end
+
+    it "raises an error when there is an extra nested property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"array": [[{"grug":[]}]]}!
+      end
+    end
+
+    it "raises an error when there is an invalid type of nested property" do
+      assert_raises Muskox::ParserError do
+        result = @parser.parse %!{"array": [[],1]}!
+      end
+    end
+  end
+
 
 #null
   #array size limits
