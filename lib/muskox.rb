@@ -30,24 +30,7 @@ module Muskox
             raise ParserError, "Unexpected property: #{value}"
           end
         when :array_begin
-          case stack.last.first
-          when :property
-            last = stack.last
-            matching_type expected_type(schema_stack.last, last), "array" do
-              stack.push [:array, []]
-              schema_stack.push(schema["properties"][last.last])
-            end
-          when :array
-            last = stack.last
-            for_array stack, schema_stack, "array" do |scope|
-              stack.push [:array, []]
-              schema_stack.push scope
-            end
-          when ROOT
-            stack.push [:array, []]
-          else
-            raise "unknown stack type #{stack.last}"
-          end
+          x_begin stack, schema_stack, [:array, []]
         when :array_end
           array_top = stack.pop
 
@@ -67,24 +50,7 @@ module Muskox
             raise "unknown stack type #{stack.last}"
           end
         when :object_begin
-          case stack.last.first
-          when :property
-            last = stack.last
-            matching_type expected_type(schema_stack.last, last), "object" do
-              stack.push [:object, {}]
-              schema_stack.push(schema_stack.last["properties"][last.last])
-            end
-          when :array
-            last = stack.last
-            for_array stack, schema_stack, "object" do |scope|
-              stack.push [:object, {}]
-              schema_stack.push scope
-            end
-          when ROOT
-            stack.push [:object, {}]
-          else
-            raise "unknown stack type #{stack.last}"
-          end
+          x_begin stack, schema_stack, [:object, {}]
         when :object_end
           object_top = stack.pop
 
@@ -127,6 +93,27 @@ module Muskox
         end
       end
       r
+    end
+
+    def x_begin stack, schema_stack, stack_value
+      case stack.last.first
+      when :property
+        last = stack.last
+        matching_type expected_type(schema_stack.last, last), stack_value.first.to_s do
+          stack.push stack_value
+          schema_stack.push(schema["properties"][last.last])
+        end
+      when :array
+        last = stack.last
+        for_array stack, schema_stack, stack_value.first.to_s do |scope|
+          stack.push stack_value
+          schema_stack.push scope
+        end
+      when ROOT
+        stack.push stack_value
+      else
+        raise "unknown stack type #{stack.last}"
+      end
     end
 
     def handle_property stack, schema_stack, type, value
