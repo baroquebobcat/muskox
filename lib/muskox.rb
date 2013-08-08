@@ -48,10 +48,7 @@ module Muskox
           case stack.last.first
           when :property
             schema_stack.pop
-            last = stack.pop
-            matching_type expected_type(schema_stack.last, last), "array" do
-              stack.last.last[last.last] = array_top.last
-            end
+            handle_property stack, schema_stack, "array", array_top.last
           when :array
             matching_type expected_type(schema_stack.last, last), "array" do
               stack.last.last << array_top.last
@@ -92,10 +89,7 @@ module Muskox
           case stack.last.first
           when :property
             schema_stack.pop
-            last = stack.pop
-            matching_type expected_type(schema_stack.last, last), "object", stack.last.first == :object do
-              stack.last.last[last.last] = object_top.last
-            end
+            handle_property stack, schema_stack, "object", object_top.last
           when :array
             schema_stack.pop
             # we've already validated the type on object_begin, so...
@@ -110,10 +104,7 @@ module Muskox
         when :integer, :string, :float, :boolean, :null
           case stack.last.first
           when :property
-            last = stack.pop
-            matching_type expected_type(schema_stack.last, last), type, stack.last.first == :object do
-              stack.last.last[last.last] = value
-            end
+            handle_property stack, schema_stack, type, value
           when :array
             for_array stack, schema_stack, type do |scope|
               stack.last.last << value
@@ -132,8 +123,14 @@ module Muskox
       r
     end
 
-    def for_array stack, schema_stack, type
+    def handle_property stack, schema_stack, type, value
+      last = stack.pop
+      matching_type expected_type(schema_stack.last, last), type, stack.last.first == :object do
+        stack.last.last[last.last] = value
+      end
+    end
 
+    def for_array stack, schema_stack, type
       case schema_stack.last["items"]
       when Hash
         matching_type schema_stack.last["items"]["type"], type do
