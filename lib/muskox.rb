@@ -63,6 +63,8 @@ module Muskox
       r
     end
 
+    private
+
     def expected_property? schema_stack, value
       schema_stack.last["properties"] && schema_stack.last["properties"].keys.include?(value)
     end
