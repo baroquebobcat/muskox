@@ -2,6 +2,8 @@
 
 A JSON Parser-Generator that takes a json-schema and converts it into a parser.
 
+It supports a subset of json-schema, and changes some of the default assumptions of the spec to be stricter--eg it effectively sets the `additionalProperties` field to false by not allowing unspecified fields. It also doesn't allow `patternProperties`, or `enum`. It definitely doesn't follow the Hyper-Schema stuff. If you want to use a portion of someone elses' schema, you'll need to drop it into yours directly.
+
 ## Why?
 
 Using a parser to handle inputs makes your app safe from attacks that rely on passing disallowed params, because disallowed params will either be ignored or rejected.
