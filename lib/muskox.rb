@@ -73,21 +73,9 @@ module Muskox
             end
           when :array
             last = stack.last
-            case schema_stack.last["items"]
-            when Hash
-              matching_type schema_stack.last["items"]["type"], "object" do
-                stack.push [:object, {}]
-                schema_stack.push(schema_stack.last["items"])
-              end
-            when Array
-              matching_type schema_stack.last["items"][stack.last.last.size]["type"], "object" do
-                stack.push [:object, {}]
-                schema_stack.push(schema_stack.last["items"][stack.last.last.size])
-              end
-            when nil
-              raise '"items" schema definition for array is missing'
-            else
-              raise "Unexpected items type #{schema_stack.last["items"]}"
+            for_array stack, schema_stack, "object" do |scope|
+              stack.push [:object, {}]
+              schema_stack.push scope
             end
           when ROOT
             stack.push [:object, {}]
@@ -127,19 +115,8 @@ module Muskox
               stack.last.last[last.last] = value
             end
           when :array
-            case schema_stack.last["items"]
-            when Hash
-              matching_type schema_stack.last["items"]["type"], type do
-                stack.last.last << value
-              end
-            when Array
-              matching_type schema_stack.last["items"][stack.last.last.size]["type"], type do
-                stack.last.last << value
-              end
-            when nil
-              raise '"items" schema definition for array is missing'
-            else
-              raise "Unexpected items type #{schema_stack.last["items"]}"
+            for_array stack, schema_stack, type do |scope|
+              stack.last.last << value
             end
           when ROOT
             matching_type schema_stack.last["type"], type do
@@ -153,6 +130,24 @@ module Muskox
         end
       end
       r
+    end
+
+    def for_array stack, schema_stack, type
+
+      case schema_stack.last["items"]
+      when Hash
+        matching_type schema_stack.last["items"]["type"], type do
+          yield schema_stack.last["items"]
+        end
+      when Array
+        matching_type schema_stack.last["items"][stack.last.last.size]["type"], type do
+          yield schema_stack.last["items"][stack.last.last.size]
+        end
+      when nil
+        raise '"items" schema definition for array is missing'
+      else
+        raise "Unexpected items type #{schema_stack.last["items"]}"
+      end
     end
 
     def expected_type schema, last
