@@ -112,6 +112,8 @@ module Muskox
               matching_type schema_stack.last["items"][stack.last.last.size]["type"], type do
                 stack.last.last << value
               end
+            when nil
+              raise '"items" schema definition for array is missing'
             else
               raise "Unexpected items type #{schema_stack.last["items"]}"
             end
