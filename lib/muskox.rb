@@ -24,11 +24,10 @@ module Muskox
 #        puts "schema stack #{schema_stack.last["type"]}"
         case type
         when :property
-          if schema_stack.last["properties"] && schema_stack.last["properties"].keys.include?(value)
-            stack.push [type, value]
-          else
+          unless expected_property? schema_stack, value
             raise ParserError, "Unexpected property: #{value}"
           end
+          stack.push [type, value]
         when :array_begin
           x_begin stack, schema_stack, [:array, []]
         when :object_begin
@@ -37,7 +36,7 @@ module Muskox
           tmp = x_end stack, schema_stack
           r = tmp if stack.last.first == ROOT
         when :object_end
-          if schema_stack.last["required"] && !(schema_stack.last["required"] - stack.last.last.keys).empty?
+          unless includes_required_properties? stack, schema_stack
             raise ParserError, "missing required keys #{schema_stack.last["required"] - stack.last.last.keys}"
           end
           tmp = x_end stack, schema_stack
@@ -62,6 +61,14 @@ module Muskox
         end
       end
       r
+    end
+
+    def expected_property? schema_stack, value
+      schema_stack.last["properties"] && schema_stack.last["properties"].keys.include?(value)
+    end
+
+    def includes_required_properties? stack, schema_stack
+      ((schema_stack.last["required"]||[]) - stack.last.last.keys).empty?
     end
 
     def x_begin stack, schema_stack, stack_value
