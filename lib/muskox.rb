@@ -69,16 +69,36 @@ module Muskox
             last = stack.last
             matching_type expected_type(schema_stack.last, last), "object" do
               stack.push [:object, {}]
-              schema_stack.push(schema["properties"][last.last])
+              schema_stack.push(schema_stack.last["properties"][last.last])
+            end
+          when :array
+            last = stack.last
+            case schema_stack.last["items"]
+            when Hash
+              matching_type schema_stack.last["items"]["type"], "object" do
+                stack.push [:object, {}]
+                schema_stack.push(schema_stack.last["items"])
+              end
+            when Array
+              matching_type schema_stack.last["items"][stack.last.last.size]["type"], "object" do
+                stack.push [:object, {}]
+                schema_stack.push(schema_stack.last["items"][stack.last.last.size])
+              end
+            when nil
+              raise '"items" schema definition for array is missing'
+            else
+              raise "Unexpected items type #{schema_stack.last["items"]}"
             end
           when ROOT
             stack.push [:object, {}]
+          else
+            raise "unknown stack type #{stack.last}"
           end
         when :object_end
           object_top = stack.pop
 
           if schema_stack.last["required"] && !(schema_stack.last["required"] - object_top.last.keys).empty?
-            raise ParserError
+            raise ParserError, "missing required keys #{schema_stack.last["required"] - object_top.last.keys}"
           end
 
           case stack.last.first
@@ -88,6 +108,10 @@ module Muskox
             matching_type expected_type(schema_stack.last, last), "object", stack.last.first == :object do
               stack.last.last[last.last] = object_top.last
             end
+          when :array
+            schema_stack.pop
+            # we've already validated the type on object_begin, so...
+            stack.last.last << object_top.last
           when ROOT
             matching_type schema_stack.last["type"], "object" do
               r = object_top.last
