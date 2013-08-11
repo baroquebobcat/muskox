@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'muskox'
+require 'spec_helper'
 
 describe Muskox do  
   describe "simple object[number]=integer schema, error on extra property" do

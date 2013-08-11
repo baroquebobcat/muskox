@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'muskox'
+require 'spec_helper'
 require 'json'
 
 
