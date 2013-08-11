@@ -1,8 +1,10 @@
+require 'muskox/types'
+
 module Muskox
 
   class ParserError < StandardError
   end
-  
+
   class Parser
     attr_reader :schema
     def initialize schema
@@ -34,7 +36,7 @@ module Muskox
             raise ParserError, "missing required keys #{schema_stack.last["required"] - stack.last.last.keys}"
           end
           x_end stack, schema_stack
-        when :integer, :string, :float, :boolean, :null
+        when *Types::SCALAR
           handle_scalar stack, schema_stack, type, value
         else
           raise "unhandled token type: #{type}: #{value}"
@@ -140,27 +142,10 @@ module Muskox
     end
 
     def matching_type expected, actual, opt=true
-      if is_type(expected, actual.to_s) && opt
+      if Types.is_type(expected, actual.to_s) && opt
         yield
       else
         raise ParserError, "expected node of type #{expected} but was #{actual}"
-      end
-    end
-
-    TYPE_WIDENINGS = {
-      'integer' => 'number',
-      'float' => 'number'
-    }
-    def is_type expected, actual
-      case expected
-      when String
-        expected == actual || expected == TYPE_WIDENINGS[actual]
-      when Array
-        expected.any? {|e| is_type e, actual }
-      when nil
-        true # is this really what the spec wants? really?
-      else
-        raise "unexpected type comparison #{expected}, #{actual}"
       end
     end
   end
