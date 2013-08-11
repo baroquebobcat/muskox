@@ -55,6 +55,16 @@ Or install it yourself as:
     parser.parse "{\"number\": true}" rescue puts $!
 ```
 
+## TODOs
+
+* performance improvements/testing
+  * Ruby is slow & the lexer uses Regex. We should do something better
+  * for JRuby: Jackson has a streaming interface that looks interesting
+* fuzz testing
+  * needs more tests that try to break it
+* better JSON-schema support
+  * maybe instead of reassuming the default for `additionalProperties`, we should validate schemas and say `"Muskox requires additionalProperties: false"`
+
 ## Contributing
 
 1. Fork it
