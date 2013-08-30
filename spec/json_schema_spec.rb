@@ -17,7 +17,10 @@ to_skip = [
            ["patternProperty invalidates property","draft4/properties.json","properties, patternProperties, additionalProperties interaction"]
 ]
 
-['draft4/items.json', 'draft4/type.json', 'draft4/properties.json', 'draft4/required.json'].each do |file|
+['draft4/items.json',
+ 'draft4/type.json',
+ 'draft4/properties.json',
+ 'draft4/required.json'].each do |file|
   json = JSON.parse(open("json_schema_test_suite/tests/#{file}").read)
   describe file do
     json.each do |t|
