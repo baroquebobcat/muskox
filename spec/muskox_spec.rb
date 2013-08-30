@@ -4,7 +4,6 @@ describe Muskox do
   describe "simple object[number]=integer schema, error on extra property" do
     before do
       schema = {
-        "title" => "Schema",
         "type" => "object",
         "properties" => {
           "number" => {
@@ -48,7 +47,6 @@ describe Muskox do
   describe "simple object[string]=string schema, error on extra property" do
     before do
       schema = {
-        "title" => "Schema",
         "type" => "object",
         "properties" => {
           "string" => {
@@ -85,7 +83,6 @@ describe Muskox do
   describe " object[array]=array[string] schema, error on extra property" do
     before do
       schema = {
-        "title" => "Schema",
         "type" => "object",
         "properties" => {
           "array" => {
@@ -131,7 +128,6 @@ describe Muskox do
   describe "object[object]=object schema, error on extra property" do
     before do
       schema = {
-        "title" => "Schema",
         "type" => "object",
         "properties" => {
           "object" => {
@@ -168,7 +164,6 @@ describe Muskox do
   describe "object[object]=object[string]=string schema, error on extra property" do
     before do
       schema = {
-        "title" => "Schema",
         "type" => "object",
         "properties" => {
           "object" => {
@@ -208,7 +203,6 @@ describe Muskox do
   describe "simple object[number]=float happy path" do
     before do
       schema = {
-        "title" => "Schema",
         "type" => "object",
         "properties" => {
           "number" => {
@@ -230,7 +224,6 @@ describe Muskox do
   describe "simple object[number]=boolean happy path" do
     before do
       schema = {
-        "title" => "Schema",
         "type" => "object",
         "properties" => {
           "number" => {
@@ -272,7 +265,6 @@ describe Muskox do
   describe "object[array]=array[object] schema, error on extra property" do
     before do
       schema = {
-        "title" => "Schema",
         "type" => "object",
         "properties" => {
           "array" => {
@@ -311,7 +303,6 @@ describe Muskox do
   describe "object[array]=array[]=array[strings] schema, error on extra property" do
     before do
       schema = {
-        "title" => "Schema",
         "type" => "object",
         "properties" => {
           "array" => {
