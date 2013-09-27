@@ -1,3 +1,0 @@
-require 'middleman-gh-pages/core'
-
-Middleman::GithubPages.create_tasks project_root: File.dirname(__FILE__)
