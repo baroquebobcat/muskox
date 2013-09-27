@@ -91,8 +91,8 @@ module Haml::Filters::Graphviz
 end
 
 module Haml::Filters::RubyCode
-  include Haml::Filters::Base
   include Middleman::Syntax::Helper
+  include Haml::Filters::Base
 
   def render(text)
     code("ruby") { text.encode("UTF-8") }
