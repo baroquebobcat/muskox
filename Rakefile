@@ -11,3 +11,16 @@ Rake::TestTask.new :spec do |t|
 end
 
 task :default => :spec
+
+namespace :docs do
+  desc "Run local server for docs"
+  task :server do
+    puts "starting doc server on http://localhost:4567"
+    `cd docs && bundle exec middleman server`
+  end
+
+  desc "publish docs to gh-pages"
+  task :publish do
+    `cd docs && bundle exec rake publish`
+  end
+end
