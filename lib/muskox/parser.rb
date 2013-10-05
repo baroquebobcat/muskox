@@ -22,7 +22,7 @@ module Muskox
         case type
         when :property
           unless expected_property? schema_stack, value
-            raise ParserError, "Unexpected property: #{value}"
+            raise ParserError, "Unexpected property: [#{value}] at root. Allowed properties: [#{(schema_stack.last["properties"]&& schema_stack.last["properties"].keys||[]).join(", ")}]"
           end
           stack.push [type, value]
         when :array_begin
