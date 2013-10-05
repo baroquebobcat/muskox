@@ -64,6 +64,8 @@ Or install it yourself as:
   * needs more tests that try to break it
 * better JSON-schema support
   * maybe instead of reassuming the default for `additionalProperties`, we should validate schemas and say `"Muskox requires additionalProperties: false"`
+ * more information on errors
+ * add option to ignore additional properties (not particularly safe...)
 
 ## Contributing
 
