@@ -25,7 +25,6 @@ describe Muskox::Extensions do
                     "email" => "b@example.com"},
                    result)
     end
-
     # TODOs
     # - validate schema
     # - ensure no overwrite

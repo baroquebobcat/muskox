@@ -3,10 +3,12 @@ require 'muskox/types'
 module Muskox
 
   class ParserError < StandardError
+
   end
 
   class Parser
     attr_reader :schema
+    
     def initialize schema
       @schema = schema
     end

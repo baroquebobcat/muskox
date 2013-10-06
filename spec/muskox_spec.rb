@@ -3,13 +3,13 @@ require 'spec_helper'
 describe Muskox do
   describe "simple object[number]=integer schema, error on extra property" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "number" => {
-                          "type" => "integer"
+      Muskox.generate type: :object,
+                      properties: {
+                        number: {
+                          type: :integer
                         }
                       },
-                      "required" => ["number"]
+                      required: [:number]
     end
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"number": 1}!
@@ -42,13 +42,13 @@ describe Muskox do
 
   describe "simple object[string]=string schema, error on extra property" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "string" => {
-                          "type" => "string"
+      Muskox.generate type: :object,
+                      properties: {
+                        string: {
+                          type: :string
                         }
                       },
-                      "required" => ["string"]
+                      required: [:string]
     end
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"string": "one"}!
@@ -74,14 +74,14 @@ describe Muskox do
 
   describe " object[array]=array[string] schema, error on extra property" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "array" => {
-                          "type" => "array",
-                          "items" => {"type" => "string"}
+      Muskox.generate type: :object,
+                      properties: {
+                        array: {
+                          type: :array,
+                          items: {type: :string}
                         }
                       },
-                      "required" => ["array"]
+                      required: [:array]
     end
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"array": ["one"]}!
@@ -115,13 +115,14 @@ describe Muskox do
 
   describe "object[object]=object schema, error on extra property" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "object" => {
-                          "type" => "object"
+      Muskox.generate type: :object,
+                      properties: {
+                        object: {
+                          type: :object,
+                          properties: {}
                         }
                       },
-                      "required" => ["object"]
+                      required: [:object]
     end
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"object": {}}!
@@ -147,15 +148,15 @@ describe Muskox do
 
   describe "object[object]=object[string]=string schema, error on extra property" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "object" => {
-                          "type" => "object",
-                          "properties" => {"string" => {"type" => "string"}},
-                          "required" => ["string"]
+      Muskox.generate type: :object,
+                      properties: {
+                        object: {
+                          type: :object,
+                          properties: {string: {type: :string}},
+                          required: [:string]
                         }
                       },
-                      "required" => ["object"]
+                      required: [:object]
     end
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"object": {"string":"a"}}!
@@ -182,13 +183,13 @@ describe Muskox do
 
   describe "simple object[number]=float happy path" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "number" => {
-                          "type" => "float"
+      Muskox.generate type: :object,
+                      properties: {
+                        number: {
+                          type: :float
                         }
                       },
-                      "required" => ["number"]
+                      required: [:number]
     end
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"number": 1.0}!
@@ -199,13 +200,13 @@ describe Muskox do
 
   describe "simple object[number]=boolean happy path" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "number" => {
-                          "type" => "boolean"
+      Muskox.generate type: :object,
+                      properties: {
+                        number: {
+                          type: :boolean
                         }
                       },
-                      "required" => ["number"]
+                      required: [:number]
     end
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"number": true}!
@@ -215,13 +216,13 @@ describe Muskox do
 
   describe "malformed json handling" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "number" => {
-                          "type" => "boolean"
+      Muskox.generate type: :object,
+                      properties: {
+                        number: {
+                          type: :boolean
                         }
                       },
-                      "required" => ["number"]
+                      required: [:number]
     end
     it "raises an error when object unended" do
       assert_raises Muskox::ParserError do
@@ -232,14 +233,14 @@ describe Muskox do
 
   describe "object[array]=array[object] schema, error on extra property" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "array" => {
-                          "type" => "array",
-                          "items" => {"type" => "object"}
+      Muskox.generate type: :object,
+                      properties: {
+                        array: {
+                          type: :array,
+                          items: {type: :object, properties: {}}
                         }
                       },
-                      "required" => ["array"]
+                      required: [:array]
     end
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"array": [{}]}!
@@ -266,14 +267,14 @@ describe Muskox do
 
   describe "object[array]=array[]=array[strings] schema, error on extra property" do
     let(:parser) do
-      Muskox.generate "type" => "object",
-                      "properties" => {
-                        "array" => {
-                          "type" => "array",
-                          "items" => {"type" => "array", "items"=>{"type" => "string"}}
+      Muskox.generate type: :object,
+                      properties: {
+                        array: {
+                          type: :array,
+                          items: {type: :array, items: {type: :string}}
                         }
                       },
-                      "required" => ["array"]
+                      required: [:array]
     end
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"array": [[]]}!

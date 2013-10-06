@@ -27,7 +27,7 @@ to_skip = [
       describe t["description"] do
         before do
           schema = t["schema"]
-          @parser = Muskox.generate schema
+          @parser = Muskox::Parser.new schema # skip validation
         end
         t["tests"].each do |test|
           it test["description"] do

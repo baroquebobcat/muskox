@@ -87,7 +87,6 @@ describe Muskox::SchemaValidator do
                      "type" => "array"
       it_blows_up_on "schema with items as array containing invalid schema",
                      "Muskox doesn't accept empty schema",
-
                     "type" => "array",
                     "items" => [{}]
 
