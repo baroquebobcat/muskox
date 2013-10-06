@@ -1,7 +1,8 @@
 module Muskox
   module Types
-    SCALAR = [:integer, :string, :float, :boolean, :null]
 
+    SCALAR = [:integer, :string, :float, :boolean, :null]
+    ALL = SCALAR.map(&:to_s) + %w[object array]
     TYPE_WIDENINGS = {
       'integer' => 'number',
       'float' => 'number'

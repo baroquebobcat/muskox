@@ -1,4 +1,5 @@
 require "muskox/version"
+require "muskox/schema_validator"
 require "muskox/json_lexer"
 require "muskox/parser"
 require "muskox/extensions"
