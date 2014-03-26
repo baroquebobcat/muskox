@@ -6,12 +6,12 @@ module Muskox
   end
 
   class UnexpectedProperty < ParserError
-    attr_reader :unexpected_property, :allowed_properties
+    attr_reader :unexpected_property, :permitted_properties
 
-    def initialize unexpected_property, allowed_properties
-      super "Unexpected property: [#{unexpected_property}] at root. Allowed properties: [#{allowed_properties.join(", ")}]"
+    def initialize unexpected_property, permitted_properties
+      super "Unexpected property: [#{unexpected_property}] at root. Allowed properties: [#{permitted_properties.join(", ")}]"
       @unexpected_property = unexpected_property
-      @allowed_properties = allowed_properties
+      @permitted_properties = permitted_properties
     end
   end
 

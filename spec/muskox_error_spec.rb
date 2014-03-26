@@ -26,8 +26,8 @@ describe Muskox::ParserError do
       assert_equal "grug", error.unexpected_property
     end
 
-    it "exposes the allowed properties" do
-      assert_equal ["number"], error.allowed_properties
+    it "exposes the permitted properties" do
+      assert_equal ["number"], error.permitted_properties
     end
   end
 end
