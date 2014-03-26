@@ -78,11 +78,11 @@ module Muskox
     end
 
     def expected_property? schema_stack, value
-      schema_stack.last["properties"] && schema_stack.last["properties"].keys.include?(value)
+      schema_stack.last.fetch("properties", {}).keys.include?(value)
     end
 
     def includes_required_properties? stack, schema_stack
-      ((schema_stack.last["required"]||[]) - stack.last.last.keys).empty?
+      (schema_stack.last.fetch("required", []) - stack.last.last.keys).empty?
     end
 
     def x_begin stack, schema_stack, stack_value
@@ -150,7 +150,7 @@ module Muskox
     end
 
     def expected_type schema, last
-      schema["properties"][last.last] && schema["properties"][last.last]["type"]
+      schema["properties"].fetch(last.last, {})["type"]
     end
 
     def matching_type expected, actual, opt=true
