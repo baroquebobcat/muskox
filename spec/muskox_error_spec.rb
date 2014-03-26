@@ -11,11 +11,23 @@ describe Muskox::ParserError do
         },
         "required" => ["number"]
     end
-    it "error for an extra property has a good message" do
-      error = assert_raises Muskox::ParserError do
-        result = parser.parse %!{"number": 2, "grug":[]}!
+
+    let(:error) do
+      assert_raises Muskox::UnexpectedProperty do
+        parser.parse %!{"number": 2, "grug":[]}!
       end
+    end
+
+    it "has a good message" do
       assert_equal "Unexpected property: [grug] at root. Allowed properties: [number]", error.message
+    end
+
+    it "exposes the unexpected property" do
+      assert_equal "grug", error.unexpected_property
+    end
+
+    it "exposes the allowed properties" do
+      assert_equal ["number"], error.allowed_properties
     end
   end
 end

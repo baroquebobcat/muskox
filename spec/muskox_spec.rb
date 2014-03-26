@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Muskox do
+
   describe "simple object[number]=integer schema, error on extra property" do
     let(:parser) do
       Muskox.generate type: :object,

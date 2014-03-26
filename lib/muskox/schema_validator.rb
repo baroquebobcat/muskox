@@ -22,7 +22,7 @@ module Muskox
         if schema["required"]
           missing_required_defs = schema["required"].select { |r| !schema["properties"].keys.include? r }
           unless missing_required_defs.empty?
-            raise InvalidSchemaError, "Missing definition for required properties: [#{missing_required_defs.join ", "}]"
+            raise InvalidSchemaError, "Missing definition for required properties: [#{missing_required_defs.join ", "}] #{schema.inspect}"
           end
         end
         schema["properties"].each do |key, sub_schema|

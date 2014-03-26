@@ -3,12 +3,21 @@ require 'muskox/types'
 module Muskox
 
   class ParserError < StandardError
+  end
 
+  class UnexpectedProperty < ParserError
+    attr_reader :unexpected_property, :allowed_properties
+
+    def initialize unexpected_property, allowed_properties
+      super "Unexpected property: [#{unexpected_property}] at root. Allowed properties: [#{allowed_properties.join(", ")}]"
+      @unexpected_property = unexpected_property
+      @allowed_properties = allowed_properties
+    end
   end
 
   class Parser
     attr_reader :schema
-    
+
     def initialize schema
       @schema = schema
     end
@@ -24,7 +33,8 @@ module Muskox
         case type
         when :property
           unless expected_property? schema_stack, value
-            raise ParserError, "Unexpected property: [#{value}] at root. Allowed properties: [#{(schema_stack.last["properties"]&& schema_stack.last["properties"].keys||[]).join(", ")}]"
+            raise UnexpectedProperty.new value,
+                                         (schema_stack.last["properties"]&& schema_stack.last["properties"].keys||[])
           end
           stack.push [type, value]
         when :array_begin
