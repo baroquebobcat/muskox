@@ -11,6 +11,7 @@ describe Muskox do
                       },
                       required: [:number]
     end
+
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"number": 1}!
       assert_equal({"number" => 1 }, result)
@@ -26,11 +27,13 @@ describe Muskox do
         result = parser.parse %!{"number": 2, "grug":[]}!
       end
     end
+
     it "raises an error when there is an invalid type of property" do
       assert_raises Muskox::ParserError do
         result = parser.parse %!{"number": "string-not-number"}!
       end
     end
+
     it "raises an error when there is a missing property" do
       assert_raises Muskox::ParserError do
         result = parser.parse %!{}!
@@ -50,6 +53,7 @@ describe Muskox do
                       },
                       required: [:string]
     end
+
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"string": "one"}!
       assert_equal({"string" => "one" }, result)
@@ -65,6 +69,7 @@ describe Muskox do
         result = parser.parse %!{"string": "two", "grug":[]}!
       end
     end
+
     it "raises an error when there is an invalid type of property" do
       assert_raises Muskox::ParserError do
         result = parser.parse %!{"string": 1701}!
@@ -124,6 +129,7 @@ describe Muskox do
                       },
                       required: [:object]
     end
+
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"object": {}}!
       assert_equal({"object" => {} }, result)
@@ -139,6 +145,7 @@ describe Muskox do
         result = parser.parse %!{"object": {}, "grug":[]}!
       end
     end
+
     it "raises an error when there is an invalid type of property" do
       assert_raises Muskox::ParserError do
         result = parser.parse %!{"object": "string"}!
@@ -158,6 +165,7 @@ describe Muskox do
                       },
                       required: [:object]
     end
+
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"object": {"string":"a"}}!
       assert_equal({"object" => {"string" => "a"} }, result)
@@ -191,6 +199,7 @@ describe Muskox do
                       },
                       required: [:number]
     end
+
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"number": 1.0}!
       assert_equal({"number" => 1.0 }, result)
@@ -208,6 +217,7 @@ describe Muskox do
                       },
                       required: [:number]
     end
+
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"number": true}!
       assert_equal({"number" => true }, result)
@@ -224,6 +234,7 @@ describe Muskox do
                       },
                       required: [:number]
     end
+
     it "raises an error when object unended" do
       assert_raises Muskox::ParserError do
         result = parser.parse %!{"number": true!
@@ -242,6 +253,7 @@ describe Muskox do
                       },
                       required: [:array]
     end
+
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"array": [{}]}!
       assert_equal({"array" => [{}] }, result)
@@ -276,6 +288,7 @@ describe Muskox do
                       },
                       required: [:array]
     end
+
     it "parses successfully when passed a valid string" do
       result = parser.parse %!{"array": [[]]}!
       assert_equal({"array" => [[]] }, result)
