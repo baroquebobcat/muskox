@@ -34,7 +34,7 @@ module Muskox
         when :property
           unless expected_property? schema_stack, value
             raise UnexpectedProperty.new value,
-                                         (schema_stack.last["properties"]&& schema_stack.last["properties"].keys||[])
+                                         schema_stack.last.fetch("properties", {}).keys
           end
           stack.push [type, value]
         when :array_begin
