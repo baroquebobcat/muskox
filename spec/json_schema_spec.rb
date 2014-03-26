@@ -35,7 +35,7 @@ to_skip = [
             if test["valid"]
               @parser.parse test["data"].to_json
             else
-              assert_raises Muskox::ParserError do 
+              assert_raises_kind_of Muskox::ParserError do 
                 @parser.parse test["data"].to_json
               end
             end

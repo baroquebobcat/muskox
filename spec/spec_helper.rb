@@ -5,7 +5,7 @@ require 'muskox'
 
 module  MiniTest::Assertions
     # override assert raises to use a kind of check while working out error hierarchy
-    def assert_raises *exp
+    def assert_raises_kind_of *exp
     msg = "#{exp.pop}.\n" if String === exp.last
 
     begin

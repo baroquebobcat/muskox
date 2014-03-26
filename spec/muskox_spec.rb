@@ -24,19 +24,19 @@ describe Muskox do
     end
 
     it "raises an error when there is an extra property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"number": 2, "grug":[]}!
       end
     end
 
     it "raises an error when there is an invalid type of property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"number": "string-not-number"}!
       end
     end
 
     it "raises an error when there is a missing property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{}!
       end
     end
@@ -66,13 +66,13 @@ describe Muskox do
     end
 
     it "raises an error when there is an extra property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"string": "two", "grug":[]}!
       end
     end
 
     it "raises an error when there is an invalid type of property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"string": 1701}!
       end
     end
@@ -105,13 +105,13 @@ describe Muskox do
     end
 
     it "raises an error when there is an extra property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"array": ["two"], "grug":[]}!
       end
     end
 
     it "raises an error when there is an invalid component type of property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"array": [1701]}!
         p result
       end
@@ -142,13 +142,13 @@ describe Muskox do
     end
 
     it "raises an error when there is an extra property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"object": {}, "grug":[]}!
       end
     end
 
     it "raises an error when there is an invalid type of property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"object": "string"}!
       end
     end
@@ -178,13 +178,13 @@ describe Muskox do
     end
 
     it "raises an error when there is an extra nested property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"object": {"string":"a","grug":[]}, }!
       end
     end
 
     it "raises an error when there is an invalid type of nested property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"object": {"string":1}}!
       end
     end
@@ -237,7 +237,7 @@ describe Muskox do
     end
 
     it "raises an error when object unended" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"number": true!
       end
     end
@@ -266,13 +266,13 @@ describe Muskox do
     end
 
     it "raises an error when there is an extra nested property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"array": [{"grug":[]}]}!
       end
     end
 
     it "raises an error when there is an invalid type of nested property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"array": [1]}!
       end
     end
@@ -301,13 +301,13 @@ describe Muskox do
     end
 
     it "raises an error when there is an extra nested property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"array": [[{"grug":[]}]]}!
       end
     end
 
     it "raises an error when there is an invalid type of nested property" do
-      assert_raises Muskox::ParserError do
+      assert_raises_kind_of Muskox::ParserError do
         result = parser.parse %!{"array": [[],1]}!
       end
     end
